@@ -59,6 +59,11 @@ test {
     useJUnitPlatform()
 }
 
+final String DEFAULT_PROFILE = 'dev'
+if(!project.hasProperty('profile') || !profile){
+        ext.profile = DEFAULT_PROFILE
+}
+
 def webappDir = "$projectDir/src/main/webapp"
 node {
     version = '10.16.0'
@@ -67,21 +72,29 @@ node {
     npmWorkDir=file("${project.buildDir}/npm")
 }
 
-task appNpmInstall(type: NpmTask) {
-    workingDir = file(webappDir)
-    args = ["install"]
-}
+print 'profile : ' + profile
+if( profile != 'dev'){
+    task appNpmInstall(type: NpmTask) {
+        workingDir = file(webappDir)
+        args = ["install"]
+    }
 
-task appNpmBuild(type: NpmTask) {
-    workingDir = file(webappDir)
-    args = ['run', 'build']
-}
+    task appNpmBuild(type: NpmTask) {
+        workingDir = file(webappDir)
+        args = ['run', 'build']
+    }
 
-task copyWebApp(type: Copy) {
-//    from "src/main/webapp/build" into 'build/resources/main/templates/.'
-    from "src/main/webapp/build" into 'src/main/resources/templates/.'
-}
+    task copyWebApp(type: Copy) {
 
-appNpmBuild.dependsOn appNpmInstall
-copyWebApp.dependsOn appNpmBuild
-compileJava.dependsOn copyWebApp
+    //    from "src/main/webapp/build" into 'build/resources/main/templates/.'
+        from "src/main/webapp/build" into 'src/main/resources/templates/.'
+    }
+
+//    appNpmInstall.onlyIf { profile != 'dev'}
+//    appNpmBuild.onlyIf { profile != 'dev'}
+//    copyWebApp.onlyIf { profile != 'dev'}
+
+    appNpmBuild.dependsOn appNpmInstall
+    copyWebApp.dependsOn appNpmBuild
+    compileJava.dependsOn copyWebApp
+}

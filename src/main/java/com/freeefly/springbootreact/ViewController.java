@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-public class    ViewController {
+public class ViewController {
     @GetMapping(value={"/", ""})
     public String index1(){
         return "index";
