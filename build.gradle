@@ -62,7 +62,7 @@ test {
 def webappDir = "$projectDir/src/main/webapp"
 node {
     version = '10.16.0'
-    download=true
+    download = true
     workDir = file("${project.buildDir}/nodejs")
     npmWorkDir=file("${project.buildDir}/npm")
 }

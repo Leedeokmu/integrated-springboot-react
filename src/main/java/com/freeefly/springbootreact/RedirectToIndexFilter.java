@@ -14,16 +14,17 @@ public class RedirectToIndexFilter implements Filter {
     public void doFilter(ServletRequest request,
                          ServletResponse response,
                          FilterChain chain) throws IOException, ServletException {
-
-        HttpServletRequest req = (HttpServletRequest) request;
-        String requestURI = req.getRequestURI();
+        String requestURI = ((HttpServletRequest) request).getRequestURI();
 
         if (requestURI.startsWith("/api")) {
             chain.doFilter(request, response);
             return;
         }
 
-        if (requestURI.endsWith(".js") ||
+        if (
+                requestURI.startsWith("/public") ||
+                requestURI.endsWith(".map") ||
+                requestURI.endsWith(".js") ||
                 requestURI.endsWith(".css") ||
                 requestURI.endsWith(".json") ||
                 requestURI.endsWith(".png") ||
